@@ -290,11 +290,22 @@ const PORCENTAJE_DUENO = 20;
 <div id="view-mi-quiniela" class="view">
   <div style="max-width:760px;margin:0 auto">
     <div class="form-card">
-      <label class="form-label">Ver quiniela de:</label>
-      <select class="form-input" id="sel-usuario" onchange="verQuiniela()">
-        <option value="">-- Seleccionar participante --</option>
-      </select>
+      <div class="form-title">🔐 Consultar Mi Quiniela</div>
+      <div class="form-sub">Ingresa tu teléfono y tu código de acceso para ver tus pronósticos.</div>
+
+      <div class="form-group">
+        <label class="form-label">Teléfono</label>
+        <input class="form-input" id="login-tel" placeholder="Ej. 3541204900">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Código de acceso</label>
+        <input class="form-input" id="login-codigo" placeholder="Ej. QM-123456">
+      </div>
+
+      <button class="btn btn-primary" onclick="verQuinielaPrivada()">Ver mi quiniela</button>
     </div>
+
     <div id="quiniela-detalle" style="display:none">
       <div style="background:linear-gradient(135deg,var(--verde),#0f3d20);border-radius:10px;padding:20px 24px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;border:1px solid rgba(201,162,39,.3)">
         <div>
@@ -310,15 +321,16 @@ const PORCENTAJE_DUENO = 20;
           </div>
         </div>
       </div>
+
       <div class="section-header">
         <div class="section-title">Pronósticos</div>
         <div class="text-xs">2pts exacto · 1pt dirección</div>
       </div>
+
       <div id="q-partidos"></div>
     </div>
   </div>
 </div>
-
 <!-- ===== REGISTRO ===== -->
 <div id="view-registro" class="view">
   <div style="max-width:600px;margin:0 auto">
@@ -662,22 +674,42 @@ function setFiltro(f) { filtroActual = f; renderPartidos(); }
 // MI QUINIELA
 // ============================================================
 function poblarSelect() {
-  const sel = document.getElementById('sel-usuario');
-  const val = sel.value;
-  sel.innerHTML = '<option value="">-- Seleccionar participante --</option>';
-  participantes.filter(p => p.status === 'activo').forEach(p => {
-    sel.innerHTML += `<option value="${p.id}"${p.id == val ? ' selected' : ''}>${p.nombre}</option>`;
-  });
-  if (val) verQuiniela();
+  // Ya no se usa selector público.
 }
 
-function verQuiniela() {
-  const id = parseInt(document.getElementById('sel-usuario').value);
-  if (!id) { document.getElementById('quiniela-detalle').style.display = 'none'; return; }
-  const p = participantes.find(x => x.id === id);
-  if (!p) return;
+function normalizarTelefono(tel) {
+  return tel.replace(/\D/g, '');
+}
 
+function verQuinielaPrivada() {
+  const telInput = normalizarTelefono(document.getElementById('login-tel').value.trim());
+  const codigoInput = document.getElementById('login-codigo').value.trim().toUpperCase();
+
+  if (!telInput || !codigoInput) {
+    alert('Ingresa tu teléfono y tu código de acceso.');
+    return;
+  }
+
+  const p = participantes.find(x =>
+    normalizarTelefono(x.telefono || '') === telInput &&
+    (x.codigo_acceso || '').toUpperCase() === codigoInput
+  );
+
+  if (!p) {
+    document.getElementById('quiniela-detalle').style.display = 'none';
+    alert('No encontramos una quiniela con ese teléfono y código.');
+    return;
+  }
+
+  if (p.status !== 'activo') {
+    document.getElementById('quiniela-detalle').style.display = 'none';
+    alert('Tu quiniela todavía está pendiente de aprobación.');
+    return;
+  }
+
+  const id = p.id;
   const pts = puntosParticipante(id);
+
   document.getElementById('q-nombre').textContent = p.nombre;
   document.getElementById('q-pts').textContent = pts.total;
   document.getElementById('q-exactos').textContent = pts.exactos;
@@ -691,12 +723,13 @@ function verQuiniela() {
 
     let chip = '';
     let real = '';
+
     if (partido.status !== 'pendiente' && pr) {
       if (puntos === 2) chip = `<span class="chip chip-2">+2 ✓</span>`;
       else if (puntos === 1) chip = `<span class="chip chip-1">+1 →</span>`;
       else chip = `<span class="chip chip-0">0 ✗</span>`;
       real = `<span class="text-xs">Real: ${partido.goles_local}-${partido.goles_visitante}</span>`;
-    } else if (partido.status === 'pendiente') {
+    } else {
       chip = `<span class="text-xs">Pendiente</span>`;
     }
 
@@ -816,9 +849,16 @@ async function confirmarRegistro() {
     const ref = document.getElementById('r-ref').value.trim();
 
     // 1. Insertar participante
-    const { data: newPart, error: errPart } = await db.from('participantes').insert({
-      nombre, telefono: tel, metodo_pago: metodo, referencia: ref, status: 'pendiente'
-    }).select().single();
+    const codigoAcceso = 'QM-' + Math.floor(100000 + Math.random() * 900000);
+
+const { data: newPart, error: errPart } = await db.from('participantes').insert({
+  nombre,
+  telefono: tel,
+  metodo_pago: metodo,
+  referencia: ref,
+  status: 'pendiente',
+  codigo_acceso: codigoAcceso
+}).select().single();
 
     if (errPart) throw errPart;
 
@@ -834,7 +874,7 @@ async function confirmarRegistro() {
     if (errProns) throw errProns;
 
     // Mostrar modal
-    document.getElementById('modal-folio').textContent = 'QM-' + newPart.id.toString().padStart(4, '0');
+    document.getElementById('modal-folio').textContent = newPart.codigo_acceso;
     document.getElementById('modal-ok').classList.add('open');
 
   } catch(e) {
