@@ -447,39 +447,47 @@ const PORCENTAJE_DUENO = 20;
 <!-- MODAL ÉXITO -->
 <div class="modal-overlay" id="modal-ok">
   <div class="modal" style="text-align:center">
+
     <div style="font-size:50px;margin-bottom:14px">🎉</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:12px">¡Quiniela Enviada!</div>
+
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:12px">
+      ¡Quiniela Enviada!
+    </div>
+
     <p style="color:var(--gris-claro);font-size:14px;line-height:1.7;margin-bottom:20px">
-  Tu registro fue recibido correctamente.<br><br>
+      Tu registro fue recibido correctamente.
+      <br><br>
 
-  ⚠️ <strong style="color:#ffcc00">
-  Guarda tu código de acceso.
-  </strong><br>
+      ⚠️ <strong style="color:#ffcc00">Guarda tu código de acceso.</strong>
+      <br>
 
-  Lo necesitarás para consultar tu quiniela y revisar tus resultados.<br><br>
+      Lo necesitarás para consultar tu quiniela y revisar tus resultados.
+      <br><br>
 
-  <strong style="color:var(--dorado)">
-  Código de acceso:
-  </strong><br>
+      <strong style="color:var(--dorado)">🔐 Código de acceso:</strong>
+      <br><br>
 
-  <span id="modal-folio"
-       <div style="margin-top:15px">
-  <button
-    onclick="copiarCodigo()"
-    class="btn btn-outline">
-    📋 Copiar código
-  </button>
-</div>
-    style="font-family:'Roboto Mono';
-    font-size:24px;
-    color:#4caf82;
-    font-weight:700">
-  </span>
-</p>
-      <strong style="color:var(--dorado)">Folio:</strong><br>
-      <span id="modal-folio" style="font-family:'Roboto Mono';font-size:20px;color:var(--crema)"></span>
+      <span
+        id="modal-folio"
+        style="
+          font-family:'Roboto Mono';
+          font-size:24px;
+          color:#4caf82;
+          font-weight:700;
+        ">
+      </span>
     </p>
-    <button class="btn btn-primary" onclick="cerrarModal()">Entendido</button>
+
+    <div style="margin-bottom:15px">
+      <button onclick="copiarCodigo()" class="btn btn-outline">
+        📋 Copiar código
+      </button>
+    </div>
+
+    <button class="btn btn-primary" onclick="cerrarModal()">
+      Entendido
+    </button>
+
   </div>
 </div>
 
