@@ -996,11 +996,39 @@ function renderAdminActivos() {
             <div style="text-align:right">
               <div style="font-family:'Roboto Mono';font-size:20px;font-weight:700;color:var(--dorado)">${pts.total} pts</div>
               <span class="badge badge-activo">Activo</span>
+              <button class="btn btn-sm btn-rojo" onclick="eliminarParticipante(${p.id})" style="margin-top:6px">
+  🗑 Eliminar
+</button>
             </div>
           </div>`;
       }).join('');
 }
+async function eliminarParticipante(id) {
+  if (!confirm('¿Eliminar este participante y todos sus pronósticos?')) return;
 
+  const { error: errProns } = await db
+    .from('pronosticos')
+    .delete()
+    .eq('participante_id', id);
+
+  if (errProns) {
+    alert('Error eliminando pronósticos: ' + errProns.message);
+    return;
+  }
+
+  const { error: errPart } = await db
+    .from('participantes')
+    .delete()
+    .eq('id', id);
+
+  if (errPart) {
+    alert('Error eliminando participante: ' + errPart.message);
+    return;
+  }
+
+  await cargarTodo();
+  alert('Participante eliminado correctamente.');
+}
 function renderAdminResultados() {
   document.getElementById('admin-resultados').innerHTML = partidos.map(p => {
     let badge = '';
