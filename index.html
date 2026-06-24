@@ -505,6 +505,9 @@ async function cargarTodo() {
       db.from('participantes').select('*').order('created_at'),
       db.from('pronosticos').select('*')
     ]);
+       console.log('PARTIDOS:', rPart.data);
+console.log('ERROR PARTIDOS:', rPart.error);
+       
     partidos = rPart.data || [];
     participantes = rPartic.data || [];
     pronosticos = rProns.data || [];
