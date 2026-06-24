@@ -13,6 +13,8 @@
   const SUPABASE_URL = 'https://wxjacwwmsucazuiqbdbe.supabase.co';   // ← cambia esto
   const SUPABASE_KEY = 'sb_publishable_cVLstOUy85pnUBV26HPzOw_HazwKUVV';                 // ← cambia esto
   const ADMIN_PASSWORD = 'Aamj129906';                     // ← cambia esto
+const COSTO_QUINIELA = 30;
+const PORCENTAJE_DUENO = 20;
 </script>
 
 <!-- Supabase SDK -->
@@ -572,7 +574,9 @@ function renderPosiciones() {
   const jugados = partidos.filter(p => p.status !== 'pendiente').length;
 
   document.getElementById('s-participantes').textContent = activos.length;
-  document.getElementById('s-pot').textContent = '$' + (activos.length * 200).toLocaleString();
+  const totalRecaudado = activos.length * COSTO_QUINIELA;
+const premioGanador = totalRecaudado * ((100 - PORCENTAJE_DUENO) / 100);
+document.getElementById('s-pot').textContent = '$' + premioGanador.toLocaleString();
   document.getElementById('s-partidos').textContent = jugados;
   document.getElementById('s-live').textContent = vivos;
   document.getElementById('ultima-actualizacion').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-MX');
