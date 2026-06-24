@@ -13,7 +13,8 @@
   const SUPABASE_URL = 'https://wxjacwwmsucazuiqbdbe.supabase.co';   // ← cambia esto
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4amFjd3dtc3VjYXp1aXFiZGJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMTY1MjMsImV4cCI6MjA5Nzg5MjUyM30.1sDkzPfUpy8xG2o_Vg45ttmeD_bQ1KjK4UpgfOcjGTU';                 // ← cambia esto
   const ADMIN_PASSWORD = 'Aamj129906';                     // ← cambia esto
-const COSTO_QUINIELA = 30;
+const FECHA_LIMITE_REGISTRO = new Date('2026-06-26T01:00:00-06:00');
+     const COSTO_QUINIELA = 30;
 const PORCENTAJE_DUENO = 20;
 </script>
 
@@ -788,6 +789,10 @@ function ir1() {
 }
 
 function ir2() {
+     if (new Date() > FECHA_LIMITE_REGISTRO) {
+  alert('El registro ya está cerrado. La fecha límite para participar ya terminó.');
+  return;
+}
   const nombre = document.getElementById('r-nombre').value.trim();
   const tel = document.getElementById('r-tel').value.trim();
   const metodo = document.getElementById('r-metodo').value;
@@ -871,6 +876,10 @@ function mostrarPago() {
 }
 
 async function confirmarRegistro() {
+     if (new Date() > FECHA_LIMITE_REGISTRO) {
+  alert('El registro ya está cerrado. Ya no es posible enviar quinielas.');
+  return;
+}
   const btn = document.getElementById('btn-confirmar');
   btn.disabled = true;
   btn.textContent = 'Enviando...';
