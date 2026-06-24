@@ -450,7 +450,32 @@ const PORCENTAJE_DUENO = 20;
     <div style="font-size:50px;margin-bottom:14px">🎉</div>
     <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:12px">¡Quiniela Enviada!</div>
     <p style="color:var(--gris-claro);font-size:14px;line-height:1.7;margin-bottom:20px">
-      Tu solicitud fue recibida. El administrador verificará tu pago y activará tu participación.<br><br>
+  Tu registro fue recibido correctamente.<br><br>
+
+  ⚠️ <strong style="color:#ffcc00">
+  Guarda tu código de acceso.
+  </strong><br>
+
+  Lo necesitarás para consultar tu quiniela y revisar tus resultados.<br><br>
+
+  <strong style="color:var(--dorado)">
+  Código de acceso:
+  </strong><br>
+
+  <span id="modal-folio"
+       <div style="margin-top:15px">
+  <button
+    onclick="copiarCodigo()"
+    class="btn btn-outline">
+    📋 Copiar código
+  </button>
+</div>
+    style="font-family:'Roboto Mono';
+    font-size:24px;
+    color:#4caf82;
+    font-weight:700">
+  </span>
+</p>
       <strong style="color:var(--dorado)">Folio:</strong><br>
       <span id="modal-folio" style="font-family:'Roboto Mono';font-size:20px;color:var(--crema)"></span>
     </p>
@@ -849,7 +874,8 @@ async function confirmarRegistro() {
     const ref = document.getElementById('r-ref').value.trim();
 
     // 1. Insertar participante
-    const codigoAcceso = 'QM-' + Math.floor(100000 + Math.random() * 900000);
+    const ultimos4 = tel.replace(/\D/g, '').slice(-4);
+const codigoAcceso = 'QM-' + ultimos4 + '-' + Math.floor(100 + Math.random() * 900);
 
 const { data: newPart, error: errPart } = await db.from('participantes').insert({
   nombre,
@@ -1034,7 +1060,14 @@ function showView(name) {
   const map = { posiciones:0, partidos:1, 'mi-quiniela':2, registro:3, admin:4 };
   document.querySelectorAll('.nav-btn').forEach((b,i) => b.classList.toggle('active', i === map[name]));
 }
+function copiarCodigo() {
+  const codigo =
+    document.getElementById('modal-folio').textContent;
 
+  navigator.clipboard.writeText(codigo);
+
+  alert('Código copiado: ' + codigo);
+}
 // ============================================================
 // INIT
 // ============================================================
