@@ -14,6 +14,7 @@
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4amFjd3dtc3VjYXp1aXFiZGJlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMTY1MjMsImV4cCI6MjA5Nzg5MjUyM30.1sDkzPfUpy8xG2o_Vg45ttmeD_bQ1KjK4UpgfOcjGTU';                 // ← cambia esto
   const ADMIN_PASSWORD = 'Aamj129906';                     // ← cambia esto
 const FECHA_LIMITE_REGISTRO = new Date('2026-06-26T01:00:00-06:00');
+     const PREMIO_FINAL = "----"; // Cambia esta cantidad cuando quieras
      const COSTO_QUINIELA = 30;
 const PORCENTAJE_DUENO = 20;
 </script>
@@ -251,8 +252,8 @@ const PORCENTAJE_DUENO = 20;
     <div class="hero-title">Tabla de <span>Posiciones</span></div>
   </div>
   <div class="stats-bar">
-    <div class="stat-card"><div class="stat-num" id="s-participantes">—</div><div class="stat-label">Participantes</div></div>
-    <div class="stat-card"><div class="stat-num" id="s-pot">—</div><div class="stat-label">Pot MXN</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-participantes">—</div><div class="stat-label">PREMIO</div>
+    <div class="stat-card"><div class="stat-num" id="s-pot">—</div><div class="stat-label">PREMIO MXN</div></div>
     <div class="stat-card"><div class="stat-num" id="s-partidos">—</div><div class="stat-label">Partidos</div></div>
     <div class="stat-card"><div class="stat-num" id="s-live">—</div><div class="stat-label"><span class="live-dot"></span>En Vivo</div></div>
   </div>
@@ -622,10 +623,15 @@ function renderPosiciones() {
   const vivos = partidos.filter(p => p.status === 'jugando').length;
   const jugados = partidos.filter(p => p.status !== 'pendiente').length;
 
-  document.getElementById('s-participantes').textContent = activos.length;
-  const totalRecaudado = activos.length * COSTO_QUINIELA;
-const premioGanador = totalRecaudado * ((100 - PORCENTAJE_DUENO) / 100);
-document.getElementById('s-pot').textContent = '$' + premioGanador.toLocaleString();
+  const registroCerrado = new Date() > FECHA_LIMITE_REGISTRO;
+
+if (registroCerrado) {
+    document.getElementById('s-participantes').textContent = '—';
+    document.getElementById('s-pot').textContent = '$' + PREMIO_FINAL.toLocaleString();
+} else {
+    document.getElementById('s-participantes').textContent = '—';
+    document.getElementById('s-pot').textContent = 'Se anunciará';
+}
   document.getElementById('s-partidos').textContent = jugados;
   document.getElementById('s-live').textContent = vivos;
   document.getElementById('ultima-actualizacion').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-MX');
